@@ -1,57 +1,48 @@
 package entities;
 
-
 import java.time.LocalDate;
+import java.util.HashSet;
+import java.util.Set;
 
-
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
-
-
 @Entity
 @Table(name = "GestioneEventi")
 @Getter
 @Setter
 @ToString
-
-
-
 public class Evento {
-@Id
-@GeneratedValue
-private long id;
-private String titolo;
-private LocalDate dataEvento;
-private String descrizione;
-private String tipoEvento;
-private int numeroMassimoPartecipanti;
+	@Id
+	@GeneratedValue
+	private long id;
+	private String titolo;
+	private LocalDate dataEvento;
+	private String tipoEvento;
+	private int numeroMassimoPartecipanti;
 
-public Evento () {
-}	
+	@OneToOne(cascade = CascadeType.ALL)
+	private Location location;
 
-	public Evento (String titolo, LocalDate dataEvento, String descrizione, String tipoEvento, int numeroMassimoPartecipanti) {
-		super();
-		this.titolo = titolo;
-		this.dataEvento = dataEvento;
-		this.descrizione = descrizione;
-		this.tipoEvento= tipoEvento;
-		this.numeroMassimoPartecipanti= numeroMassimoPartecipanti;
+	@OneToMany(mappedBy = "evento", cascade = CascadeType.ALL)
+	private Set<Partecipazione> partecipazioni = new HashSet<>();
+
+	public Evento() {
 	}
 
-	
-
-	
-	
-
-	
-	    }
-	
-
-
+	public Evento(String titolo, LocalDate dataEvento, String tipoEvento, int numeroMassimoPartecipanti) {
+		this.titolo = titolo;
+		this.dataEvento = dataEvento;
+		this.tipoEvento = tipoEvento;
+		this.numeroMassimoPartecipanti = numeroMassimoPartecipanti;
+	}
+}
