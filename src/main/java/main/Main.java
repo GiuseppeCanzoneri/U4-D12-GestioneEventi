@@ -1,53 +1,96 @@
 package main;
 
 import java.time.LocalDate;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.List;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import javax.persistence.Persistence;
 
 import dao.EventoDAO;
-import dao.LocationDAO;
-import dao.PartecipazioneDAO;
-import dao.PersonaDAO;
+import entities.Concerto;
 import entities.Evento;
-import entities.Location;
-import entities.Partecipazione;
+import entities.GaraDiAtletica;
+import entities.GenereConcerto;
+import entities.PartitaDiCalcio;
 import entities.Persona;
-import utils.JpaUtil;
+import entities.Sesso;
 
 public class Main {
-	private static Logger logger = LoggerFactory.getLogger(Main.class);
-	private static EntityManagerFactory emf = JpaUtil.getEntityManagerFactory();
+    public static void main(String[] args) {
+        EntityManagerFactory emf = Persistence.createEntityManagerFactory("GestioneEventi");
+        EntityManager em = emf.createEntityManager();
 
-	public static void main(String[] args) {
-		
-		    logger.info("Prova");
-		    EntityManager em = emf.createEntityManager();
-		    EventoDAO eventoDAO = new EventoDAO(em);
-		    PersonaDAO personaDAO = new PersonaDAO(em);
-		    LocationDAO locationDAO = new LocationDAO(em);
-		    PartecipazioneDAO partecipazioneDAO = new PartecipazioneDAO(em);
+        try {
+            EventoDAO eventoDAO = new EventoDAO(em);
 
-		    // Salva una persona
-		    Persona persona = new Persona("Mario", "Rossi", "mario@example.com", LocalDate.of(1990, 5, 10), "Maschio");
-		    personaDAO.save(persona);
+            // Creazione di un concerto
+            Concerto concerto = new Concerto();
+            concerto.setTitolo("Concerto di prova");
+            concerto.setDataEvento(LocalDate.now());
+            concerto.setDescrizione("Concerto di prova");
+            concerto.setTipoEvento("Concerto");
+            concerto.setNumeroMassimoPartecipanti(1000);
+            concerto.setGenere(GenereConcerto.ROCK);
+            concerto.setInStreaming(true);
 
-		    // Salva una location
-		    Location location = new Location("Stadio San Siro", "Milano");
-		    locationDAO.save(location);
+            eventoDAO.save(concerto);
 
-		    // Salva un evento con la partecipazione della persona nella location
-		    Evento evento = new Evento("Concerto bylli"	,"molto bello", LocalDate.now(), "PUBBLICO", 20000);
-		    evento.setLocation(location);
-		    eventoDAO.save(evento);
+            // Creazione di una partita di calcio
+            PartitaDiCalcio partitaDiCalcio = new PartitaDiCalcio();
+            partitaDiCalcio.setTitolo("Partita di calcio di prova");
+            partitaDiCalcio.setDataEvento(LocalDate.now());
+            partitaDiCalcio.setDescrizione("Partita di calcio di prova");
+            partitaDiCalcio.setTipoEvento("Partita di calcio");
+            partitaDiCalcio.setNumeroMassimoPartecipanti(5000);
+            partitaDiCalcio.setSquadraDiCasa("Inter");
+            partitaDiCalcio.setSquadraOspite("Milan");
+            partitaDiCalcio.setSquadraVincente("Inter");
+            partitaDiCalcio.setNumeroGolSquadraDiCasa(3);
+            partitaDiCalcio.setNumeroGolSquadraOspite(1);
 
-		    Partecipazione partecipazione = new Partecipazione(persona, evento, "CONFERMATA");
-		    partecipazioneDAO.save(partecipazione);
+            eventoDAO.save(partitaDiCalcio);
 
-		    em.close();
-		    emf.close();
-		}
+            // Creazione di una gara di atletica
+            GaraDiAtletica garaDiAtletica = new GaraDiAtletica();
+            garaDiAtletica.setTitolo("Gara di atletica di prova");
+            garaDiAtletica.setDataEvento(LocalDate.now());
+            garaDiAtletica.setDescrizione("Gara di atletica di prova");
+            garaDiAtletica.setTipoEvento("Gara di atletica");
+            garaDiAtletica.setNumeroMassimoPartecipanti(100);
+            
+            // Creazione di alcune persone per la gara di atletica
+            Persona persona1 = new Persona("Mario", "Rossi", "mario@email.com",
+                    LocalDate.of(1990, 5, 10), Sesso.MASCHIO);
+            Persona persona2 = new Persona("Giulia", "Bianchi", "giulia@email.com",
+                    LocalDate.of(1992, 8, 20), Sesso.FEMMINA);
+            
+            eventoDAO.save(persona1);
+            eventoDAO.save(persona2);
+            
+            garaDiAtletica.setAtleti(new HashSet<>(Arrays.asList(persona1, persona2)));
+            garaDiAtletica.setVincitore(persona1);
+
+            eventoDAO.save(garaDiAtletica);
+
+            // Esempio di utilizzo del metodo getConcertiInStreaming
+            List<Concerto> concertiInStreaming = eventoDAO.getConcertiInStreaming(true);
+            System.out.println("Concerti in streaming:");
+            for (Concerto concertoInStreaming : concertiInStreaming) {
+                System.out.println(concertoInStreaming);
+            }
+
+            // Esempio di utilizzo del metodo getConcertiPerGenere
+            List<Concerto> concertiRock = eventoDAO.getConcertiPerGenere(Arrays.asList(GenereConcerto.ROCK));
+            System.out.println("Concerti rock:");
+            for (Concerto concertoRock : concertiRock) {
+                System.out.println(concertoRock);
+            }
+        } finally {
+            em.close();
+            emf.close();
+        }
+    }
 }

@@ -2,6 +2,7 @@ package entities;
 
 
 
+
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -29,7 +30,7 @@ public class Persona {
 	private String cognome;
 	private String email;
 	private LocalDate dataNascita;
-	private String sesso;
+	private Sesso sesso;
 
 	@OneToMany(mappedBy = "persona")
 	private List<Partecipazione> listaPartecipazioni = new ArrayList<>();
@@ -37,11 +38,11 @@ public class Persona {
 	public Persona() {
 	}
 
-	public Persona(String nome, String cognome, String email, LocalDate dataNascita, String sesso) {
-		this.nome = nome;
-		this.cognome = cognome;
-		this.email = email;
-		this.dataNascita = dataNascita;
-		this.sesso = sesso;
+	public Persona(String nome, String cognome, String email, LocalDate dataNascita, Sesso sesso) {
+	    this.nome = nome;
+	    this.cognome = cognome;
+	    this.email = email;
+	    this.dataNascita = dataNascita;
+	    this.sesso = sesso;
 	}
 }
