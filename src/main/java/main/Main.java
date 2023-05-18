@@ -40,7 +40,7 @@ public class Main {
 		    locationDAO.save(location);
 
 		    // Salva un evento con la partecipazione della persona nella location
-		    Evento evento = new Evento("Concerto bylli"	, LocalDate.now(), "PUBBLICO", 20000);
+		    Evento evento = new Evento("Concerto bylli"	,"molto bello", LocalDate.now(), "PUBBLICO", 20000);
 		    evento.setLocation(location);
 		    eventoDAO.save(evento);
 

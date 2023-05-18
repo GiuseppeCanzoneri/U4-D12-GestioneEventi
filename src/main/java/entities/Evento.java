@@ -26,6 +26,7 @@ public class Evento {
 	@GeneratedValue
 	private long id;
 	private String titolo;
+	private String descrizione;
 	private LocalDate dataEvento;
 	private String tipoEvento;
 	private int numeroMassimoPartecipanti;
@@ -39,8 +40,9 @@ public class Evento {
 	public Evento() {
 	}
 
-	public Evento(String titolo, LocalDate dataEvento, String tipoEvento, int numeroMassimoPartecipanti) {
+	public Evento(String titolo, String descrizione ,LocalDate dataEvento, String tipoEvento, int numeroMassimoPartecipanti) {
 		this.titolo = titolo;
+		this.descrizione= descrizione;
 		this.dataEvento = dataEvento;
 		this.tipoEvento = tipoEvento;
 		this.numeroMassimoPartecipanti = numeroMassimoPartecipanti;
